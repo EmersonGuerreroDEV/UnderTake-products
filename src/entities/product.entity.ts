@@ -1,8 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Brand } from './brand.entity';
 import { Size } from './size.entity';
-import { Variant } from './variant.entity';
 import { Category } from './category.entity';
+import { Variant } from './variant.entity';
 
 @Entity()
 export class Product {
@@ -21,11 +21,8 @@ export class Product {
     @ManyToOne(() => Brand, (brand) => brand.products)
     brand: Brand;
 
-    @ManyToOne(() => Size, (size) => size.products, { nullable: true })
-    size: Size;
-
     @OneToMany(() => Variant, (variant) => variant.product)
-    variants: Variant[];
+    variants: Variant[]; // Relación con las variantes
 
     @ManyToMany(() => Category, (category) => category.products)
     @JoinTable({

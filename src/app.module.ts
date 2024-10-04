@@ -7,8 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Brand } from './entities/brand.entity';
 import { Category } from './entities/category.entity';
-import { Size } from './entities/size.entity';
 import { Variant } from './entities/variant.entity';
+import { Size } from './entities/size.entity';
+
 @Module({
   imports: [ConfigModule.forRoot({
     load: [EnvConfiguration],
@@ -26,11 +27,11 @@ import { Variant } from './entities/variant.entity';
       database: configService.get<string>('database'),
       // Si usas una URL en lugar de los campos separados:
       // url: configService.get<string>('database.url'),
-      entities: [Product, Brand, Category, Size, Variant], // Define tus entidades aquí
+      entities: [Product, Brand, Category, Variant, Size], // Define tus entidades aquí
       synchronize: true, // Solo para desarrollo, desactívalo en producción
     }),
   }),
-  TypeOrmModule.forFeature([Product, Brand, Category, Size, Variant]),],
+  TypeOrmModule.forFeature([Product, Brand, Category, Variant, Size]),],
   controllers: [ProductsController],
   providers: [ProductsService],
 })

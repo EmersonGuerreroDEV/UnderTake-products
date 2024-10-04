@@ -10,12 +10,12 @@ export class Variant {
     @Column()
     color: string;
 
+    @Column() // Cambiado a string
+    size: string; // Ahora es una cadena de texto
+
     @Column()
     stock: number;
 
     @ManyToOne(() => Product, (product) => product.variants)
     product: Product;
-
-    @ManyToOne(() => Size, (size) => size.variants)
-    size: Size;
 }

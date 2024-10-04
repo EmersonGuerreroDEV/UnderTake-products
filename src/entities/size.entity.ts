@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Product } from './product.entity';
-import { Variant } from './variant.entity';
+// Asegúrate de tener la ruta correcta
 
 @Entity()
 export class Size {
@@ -8,11 +7,6 @@ export class Size {
     id: number;
 
     @Column()
-    name: string;
+    name: string; // Nombre de la talla
 
-    @OneToMany(() => Product, (product) => product.size)
-    products: Product[];
-
-    @OneToMany(() => Variant, (variant) => variant.size)
-    variants: Variant[];
 }

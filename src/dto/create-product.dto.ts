@@ -18,9 +18,9 @@ export class CreateProductDto {
     @IsOptional()
     brandId?: number;
 
-    @IsNumber()
+    @IsString()
     @IsOptional()
-    sizeId?: number;
+    size?: string;
 
     @IsArray()
     @IsOptional()
@@ -38,9 +38,9 @@ class CreateVariantDto {
     @IsNotEmpty()
     color: string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    sizeId: number;
+    @IsString()
+    @IsOptional()
+    size?: string;
 
     @IsNumber()
     @IsNotEmpty()

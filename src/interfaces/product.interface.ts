@@ -27,6 +27,6 @@ interface CategoryResponse {
 interface VariantResponse {
     id: number;
     color: string;
-    size: SizeResponse;
+    size: string;
     stock: number;
 }
