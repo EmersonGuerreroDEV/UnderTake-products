@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
@@ -99,20 +99,27 @@ export class ProductsService {
   }
 
 
-  async addVariantToProduct(productId: number, variantData: CreateVariantDto): Promise<Variant> {
-    // Cambia la búsqueda a la forma correcta
-    const product = await this.productRepository.findOne({ where: { id: productId } });
-    if (!product) {
-      throw new NotFoundException('Product not found');
+  async createVariant(CreateVariantDto): Promise<Variant> {
+    try {
+      console.log("Hola mundo, commo estas")
+      // Cambia la búsqueda a la forma correcta
+      const { id, color, stock, size } = CreateVariantDto
+      const product = await this.productRepository.findOne({ where: { id } });
+      if (!product) {
+        throw new NotFoundException('Product not found');
+      }
+
+      const variant = new Variant();
+      variant.color = color;
+      variant.stock = stock;
+      variant.size = size;
+      variant.product = product; // Asignar el producto a la variante
+
+      return await this.variantRepository.save(variant);
+    } catch (error) {
+      console.log(error)
+      throw new BadRequestException(error);
     }
-
-    const variant = new Variant();
-    variant.color = variantData.color;
-    variant.stock = variantData.stock;
-    variant.size = variantData.size;
-    variant.product = product; // Asignar el producto a la variante
-
-    return await this.variantRepository.save(variant);
   }
 
 

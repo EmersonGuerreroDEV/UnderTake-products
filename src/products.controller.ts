@@ -41,10 +41,20 @@ export class ProductsController {
   }
 
   // Métodos para manejar marcas
-  @Post('brands')
+  @MessagePattern({ cmd: 'create-brands' })
   async createBrand(@Body() createBrandDto: CreateBrandDto) {
     return this.productsService.createBrand(createBrandDto);
   }
+
+
+
+  @MessagePattern({ cmd: 'create-variant' })
+  async createVariant(@Body() createVariantDto: CreateVariantDto) {
+    console.log("Hola como estas todo")
+    return this.productsService.createVariant(createVariantDto);
+  }
+
+
 
   @Get('brands/list')
   async findAllBrands() {

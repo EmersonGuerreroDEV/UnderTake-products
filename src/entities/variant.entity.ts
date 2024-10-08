@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Product } from './product.entity';
-import { Size } from './size.entity';
+
 
 @Entity()
 export class Variant {
@@ -10,7 +10,7 @@ export class Variant {
     @Column()
     color: string;
 
-    @Column() // Cambiado a string
+    @Column({ default: "" }) // Cambiado a string
     size: string; // Ahora es una cadena de texto
 
     @Column()
@@ -18,4 +18,7 @@ export class Variant {
 
     @ManyToOne(() => Product, (product) => product.variants)
     product: Product;
+
+    // @Column()
+    // image: string
 }

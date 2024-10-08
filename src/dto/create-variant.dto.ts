@@ -1,6 +1,12 @@
 import { IsString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateVariantDto {
+
+    @IsNumber()
+    @IsNotEmpty()
+    id: number;
+
+
     @IsString()
     @IsNotEmpty()
     color: string;
