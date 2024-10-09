@@ -8,6 +8,7 @@ async function bootstrap() {
     transport: Transport.TCP,
     options: { port: 3002 }, // Asegúrate de que el puerto coincida
   });
+
   await app.listen();
 }
 bootstrap();

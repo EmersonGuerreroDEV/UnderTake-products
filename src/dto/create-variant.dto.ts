@@ -15,7 +15,12 @@ export class CreateVariantDto {
     @IsOptional()
     size?: string;
 
+    @IsString()
+    @IsOptional()
+    image: string;
+
     @IsNumber()
     @IsNotEmpty()
     stock: number;   // Cantidad de stock disponible
+
 }

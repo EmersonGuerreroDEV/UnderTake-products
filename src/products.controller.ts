@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put } from '@nestjs/common';
+import { ClientProxy, MessagePattern } from '@nestjs/microservices';
 import { ProductsService } from './products.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
@@ -10,10 +10,14 @@ import { UpdateSizeDto } from './dto/update-size.dto';
 import { CreateVariantDto } from './dto/create-variant.dto';
 import { UpdateVariantDto } from './dto/update-variant.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { lastValueFrom } from 'rxjs';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(
+    private readonly productsService: ProductsService,
+    @Inject('UPLOAD_SERVICE') private readonly uploadService: ClientProxy
+  ) { }
 
   @MessagePattern({ cmd: 'create-product' })
   createProduct(@Body() data: any) {
@@ -47,10 +51,22 @@ export class ProductsController {
   }
 
 
-
   @MessagePattern({ cmd: 'create-variant' })
-  async createVariant(@Body() createVariantDto: CreateVariantDto) {
-    console.log("Hola como estas todo")
+  async createVariant(data: any) {
+    const { file, stock, id, color } = data;
+
+    // Aquí utilizamos lastValueFrom para obtener la promesa
+    const imageResponse = await lastValueFrom(this.uploadService.send({ cmd: "upload-profile-picture" }, { file: file.buffer, originalname: file.originalname }));
+
+    console.log("Imagen subida:", imageResponse); // Verifica que esta línea se ejecute
+
+    const createVariantDto: CreateVariantDto = {
+      stock,
+      id,
+      color,
+      image: imageResponse.url, // Asegúrate de que esto sea lo que devuelves
+    };
+
     return this.productsService.createVariant(createVariantDto);
   }
 
