@@ -82,6 +82,7 @@ export class ProductsService {
         color: variant.color,
         size: variant.size,
         stock: variant.stock,
+        image: variant.image
       })),
     };
   }

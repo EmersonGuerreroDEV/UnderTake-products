@@ -15,7 +15,7 @@ export class Product {
     @Column({ nullable: true })
     description: string;
 
-    @Column('decimal', { precision: 10, scale: 2 })
+    @Column()
     price: number;
 
     @ManyToOne(() => Brand, (brand) => brand.products)
