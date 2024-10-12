@@ -71,6 +71,7 @@ export class ProductsService {
       name: product.name,
       description: product.description,
       price: product.price,
+      discount: product.discount,
       brand: product.brand ? { id: product.brand.id, name: product.brand.name } : null,
 
       categories: product.categories?.map((category) => ({
@@ -83,6 +84,7 @@ export class ProductsService {
         size: variant.size,
         stock: variant.stock,
         image: variant.image
+        
       })),
     };
   }

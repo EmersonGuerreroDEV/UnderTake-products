@@ -18,6 +18,9 @@ export class Product {
     @Column()
     price: number;
 
+    @Column()
+    discount: number
+
     @ManyToOne(() => Brand, (brand) => brand.products)
     brand: Brand;
 

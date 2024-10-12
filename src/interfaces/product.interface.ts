@@ -7,6 +7,7 @@ export interface ProductResponse {
     size?: SizeResponse;
     categories?: CategoryResponse[];
     variants?: VariantResponse[];
+    discount: number
 }
 
 interface BrandResponse {
