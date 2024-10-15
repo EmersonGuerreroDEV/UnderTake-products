@@ -34,6 +34,13 @@ export class ProductsController {
     return this.productsService.findOne(id);
   }
 
+  @MessagePattern({ cmd: 'get-get_product_by_id' })
+  findOneVariant(@Body() data: any) {
+    return this.productsService.findOneVariant(data.variantId, data.productId);
+  }
+
+
+
   @MessagePattern({ cmd: 'update-product' })
   updateProduct(@Body() { id, updateProductDto }: { id: number; updateProductDto: UpdateProductDto }) {
     return this.productsService.updateProduct(id, updateProductDto);

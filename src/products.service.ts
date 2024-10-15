@@ -84,10 +84,46 @@ export class ProductsService {
         size: variant.size,
         stock: variant.stock,
         image: variant.image
-        
+
       })),
     };
   }
+
+
+
+  async findOneVariant(variantId: number, id: number): Promise<ProductResponse> {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: ['brand', 'categories', 'variants'],
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+
+    return {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      discount: product.discount,
+      brand: product.brand ? { id: product.brand.id, name: product.brand.name } : null,
+      categories: product.categories?.map((category) => ({
+        id: category.id,
+        name: category.name,
+      })),
+      variants: product.variants
+        ?.filter((variant) => variant.id === variantId) // Filtra solo la variante que coincide con variantId
+        .map((variant) => ({ // Mapea la variante filtrada
+          id: variant.id,
+          color: variant.color,
+          size: variant.size,
+          stock: variant.stock,
+          image: variant.image,
+        })) || [], // Devuelve un array vacío si no hay variantes
+    };
+  }
+
 
 
   // Actualizar un producto
