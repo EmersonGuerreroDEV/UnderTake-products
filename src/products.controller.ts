@@ -105,7 +105,7 @@ export class ProductsController {
     return this.productsService.createCategory(createCategoryDto);
   }
 
-  @Get('categories')
+  @MessagePattern({ cmd: 'list-categories' })
   async findAllCategories() {
     return this.productsService.findAllCategories();
   }
