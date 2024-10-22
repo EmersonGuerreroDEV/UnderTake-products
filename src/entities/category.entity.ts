@@ -11,4 +11,7 @@ export class Category {
 
     @ManyToMany(() => Product, (product) => product.categories)
     products: Product[];
+
+    @Column()
+    image: string;
 }
