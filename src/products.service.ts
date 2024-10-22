@@ -140,9 +140,9 @@ export class ProductsService {
 
   async createVariant(CreateVariantDto): Promise<Variant> {
     try {
-      console.log("Hola mundo, commo estas")
+
       // Cambia la búsqueda a la forma correcta
-      const { id, color, stock, size } = CreateVariantDto
+      const { id, color, stock, size, image } = CreateVariantDto
       const product = await this.productRepository.findOne({ where: { id } });
       if (!product) {
         throw new NotFoundException('Product not found');
@@ -152,9 +152,28 @@ export class ProductsService {
       variant.color = color;
       variant.stock = stock;
       variant.size = size;
+      variant.image = image;
       variant.product = product; // Asignar el producto a la variante
 
       return await this.variantRepository.save(variant);
+    } catch (error) {
+      console.log(error)
+      throw new BadRequestException(error);
+    }
+  }
+
+
+  async updateVariant(UpdateVariantDto, id: number) {
+    try {
+
+      // Cambia la búsqueda a la forma correcta
+
+      const variant = await this.variantRepository.update(id, UpdateVariantDto);
+      if (!variant) {
+        throw new NotFoundException(' not found');
+      }
+
+      return true
     } catch (error) {
       console.log(error)
       throw new BadRequestException(error);
@@ -194,6 +213,7 @@ export class ProductsService {
 
 
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category> {
+    console.log(createCategoryDto, "DTO")
     const category = this.categoryRepository.create(createCategoryDto);
     return await this.categoryRepository.save(category);
   }
@@ -210,6 +230,7 @@ export class ProductsService {
 
   // Actualizar una categoría
   async updateCategory(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
+    console.log(id)
     await this.categoryRepository.update(id, updateCategoryDto);
     return this.findCategoryById(id);
   }

@@ -60,16 +60,24 @@ export class ProductsController {
 
   @MessagePattern({ cmd: 'create-variant' })
   async createVariant(data: any) {
-    const { file, stock, id, color } = data;
+    const { file, stock, id, size, color } = data;
 
-    // Aquí utilizamos lastValueFrom para obtener la promesa
-    const imageResponse = await lastValueFrom(this.uploadService.send({ cmd: "upload-profile-picture" }, { file: file.buffer, originalname: file.originalname }));
+    const fileBuffer = Buffer.isBuffer(file.buffer) ? file.buffer : Buffer.from(file.buffer);
+
+    const imageResponse = await lastValueFrom(
+      this.uploadService.send({ cmd: "upload-profile-picture" }, {
+        file: fileBuffer,  // Asegúrate de que este sea un buffer
+        originalname: file.originalname
+      })
+    );
+
 
     console.log("Imagen subida:", imageResponse); // Verifica que esta línea se ejecute
 
     const createVariantDto: CreateVariantDto = {
       stock,
       id,
+      size,
       color,
       image: imageResponse.url, // Asegúrate de que esto sea lo que devuelves
     };
@@ -77,30 +85,42 @@ export class ProductsController {
     return this.productsService.createVariant(createVariantDto);
   }
 
+  @MessagePattern({ cmd: 'update-variant' })
+  async updateVariant(data: any) {
+    console.log(data, "ESTA ES LA ACTUALIZACION DEL PRODUCTO")
 
+    const { file } = data
+    // Verifica que esta línea se ejecute
 
-  @Get('brands/list')
-  async findAllBrands() {
-    return this.productsService.findAllBrands();
+    const createVariantDto: UpdateVariantDto = data.data;
+
+    if (file) {
+      const fileBuffer = Buffer.isBuffer(file.buffer) ? file.buffer : Buffer.from(file.buffer);
+
+      const imageResponse = await lastValueFrom(
+        this.uploadService.send({ cmd: "upload-profile-picture" }, {
+          file: fileBuffer,  // Asegúrate de que este sea un buffer
+          originalname: file.originalname
+        })
+      );
+      createVariantDto.image = imageResponse.url
+
+    }
+
+    return this.productsService.updateVariant(createVariantDto, data.id);
   }
 
-  @Get('brands/:id')
-  async findBrandById(@Param('id') id: number) {
-    return this.productsService.findBrandById(id);
-  }
-
-  @Put('brands/:id')
+  @MessagePattern({ cmd: '' })
   async updateBrand(@Param('id') id: number, @Body() updateBrandDto: UpdateBrandDto) {
     return this.productsService.updateBrand(id, updateBrandDto);
   }
 
-  @Delete('brands/:id')
-  async removeBrand(@Param('id') id: number) {
-    return this.productsService.removeBrand(id);
-  }
+
+
+
 
   // Métodos para manejar categorías
-  @Post('categories')
+  @MessagePattern({ cmd: 'create-categories' })
   async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     return this.productsService.createCategory(createCategoryDto);
   }
@@ -115,9 +135,10 @@ export class ProductsController {
     return this.productsService.findCategoryById(id);
   }
 
-  @Put('categories/:id')
-  async updateCategory(@Param('id') id: number, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.productsService.updateCategory(id, updateCategoryDto);
+
+  @MessagePattern({ cmd: 'update-categories' })
+  async updateCategory(@Body() updateCategoryDto: UpdateCategoryDto) {
+    return this.productsService.updateCategory(updateCategoryDto.id, updateCategoryDto);
   }
 
   @Delete('categories/:id')
@@ -125,29 +146,4 @@ export class ProductsController {
     return this.productsService.removeCategory(id);
   }
 
-  // Métodos para manejar tamaños
-  @Post('sizes')
-  async createSize(@Body() createSizeDto: CreateSizeDto) {
-    return this.productsService.createSize(createSizeDto);
-  }
-
-  @Get('sizes')
-  async findAllSizes() {
-    return this.productsService.findAllSizes();
-  }
-
-  @Get('sizes/:id')
-  async findSizeById(@Param('id') id: number) {
-    return this.productsService.findSizeById(id);
-  }
-
-  @Put('sizes/:id')
-  async updateSize(@Param('id') id: number, @Body() updateSizeDto: UpdateSizeDto) {
-    return this.productsService.updateSize(id, updateSizeDto);
-  }
-
-  @Delete('sizes/:id')
-  async removeSize(@Param('id') id: number) {
-    return this.productsService.removeSize(id);
-  }
 }
