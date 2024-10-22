@@ -84,10 +84,46 @@ export class ProductsService {
         size: variant.size,
         stock: variant.stock,
         image: variant.image
-        
+
       })),
     };
   }
+
+
+
+  async findOneVariant(variantId: number, id: number): Promise<ProductResponse> {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: ['brand', 'categories', 'variants'],
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+
+    return {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      discount: product.discount,
+      brand: product.brand ? { id: product.brand.id, name: product.brand.name } : null,
+      categories: product.categories?.map((category) => ({
+        id: category.id,
+        name: category.name,
+      })),
+      variants: product.variants
+        ?.filter((variant) => variant.id === variantId) // Filtra solo la variante que coincide con variantId
+        .map((variant) => ({ // Mapea la variante filtrada
+          id: variant.id,
+          color: variant.color,
+          size: variant.size,
+          stock: variant.stock,
+          image: variant.image,
+        })) || [], // Devuelve un array vacío si no hay variantes
+    };
+  }
+
 
 
   // Actualizar un producto
@@ -104,9 +140,9 @@ export class ProductsService {
 
   async createVariant(CreateVariantDto): Promise<Variant> {
     try {
-      console.log("Hola mundo, commo estas")
+
       // Cambia la búsqueda a la forma correcta
-      const { id, color, stock, size } = CreateVariantDto
+      const { id, color, stock, size, image } = CreateVariantDto
       const product = await this.productRepository.findOne({ where: { id } });
       if (!product) {
         throw new NotFoundException('Product not found');
@@ -116,9 +152,28 @@ export class ProductsService {
       variant.color = color;
       variant.stock = stock;
       variant.size = size;
+      variant.image = image;
       variant.product = product; // Asignar el producto a la variante
 
       return await this.variantRepository.save(variant);
+    } catch (error) {
+      console.log(error)
+      throw new BadRequestException(error);
+    }
+  }
+
+
+  async updateVariant(UpdateVariantDto, id: number) {
+    try {
+
+      // Cambia la búsqueda a la forma correcta
+
+      const variant = await this.variantRepository.update(id, UpdateVariantDto);
+      if (!variant) {
+        throw new NotFoundException(' not found');
+      }
+
+      return true
     } catch (error) {
       console.log(error)
       throw new BadRequestException(error);
@@ -158,6 +213,7 @@ export class ProductsService {
 
 
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category> {
+    console.log(createCategoryDto, "DTO")
     const category = this.categoryRepository.create(createCategoryDto);
     return await this.categoryRepository.save(category);
   }
@@ -174,6 +230,7 @@ export class ProductsService {
 
   // Actualizar una categoría
   async updateCategory(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
+    console.log(id)
     await this.categoryRepository.update(id, updateCategoryDto);
     return this.findCategoryById(id);
   }
