@@ -1,8 +1,8 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateBrandDto {
-    @IsString()
-    @IsNotEmpty()
-    name: string;
-    categories: any;
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+  categories: any;
 }

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
@@ -16,13 +20,9 @@ import { CreateVariantDto } from './dto/create-variant.dto';
 import { Size } from './entities/size.entity';
 import { Variant } from './entities/variant.entity';
 
-
 @Injectable()
 export class ProductsService {
-
-
   constructor(
-
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
 
@@ -36,23 +36,24 @@ export class ProductsService {
     private sizeRepository: Repository<Size>,
     @InjectRepository(Variant)
     private variantRepository: Repository<Variant>,
-
-  ) { }
+  ) {}
 
   async createProduct(data: Product): Promise<CreateBrandDto> {
     // Verifica que estás creando un solo producto
+
     const product = this.productRepository.create(data);
 
     // Verificar si se han pasado categorías y asignarlas al producto
     if (data.categories && data.categories.length) {
-      const categories = await this.categoryRepository.findByIds(data.categories);
+      const categories = await this.categoryRepository.findByIds(
+        data.categories,
+      );
       product.categories = categories; // Aquí ya estamos seguros de que 'product' es un objeto, no un array
     }
 
     // Guardar el producto
     return await this.productRepository.save(product); // Retorna un solo producto
   }
-
 
   async findAll(): Promise<Product[]> {
     return this.productRepository.find({
@@ -72,7 +73,9 @@ export class ProductsService {
       description: product.description,
       price: product.price,
       discount: product.discount,
-      brand: product.brand ? { id: product.brand.id, name: product.brand.name } : null,
+      brand: product.brand
+        ? { id: product.brand.id, name: product.brand.name }
+        : null,
 
       categories: product.categories?.map((category) => ({
         id: category.id,
@@ -83,15 +86,15 @@ export class ProductsService {
         color: variant.color,
         size: variant.size,
         stock: variant.stock,
-        image: variant.image
-
+        image: variant.image,
       })),
     };
   }
 
-
-
-  async findOneVariant(variantId: number, id: number): Promise<ProductResponse> {
+  async findOneVariant(
+    variantId: number,
+    id: number,
+  ): Promise<ProductResponse> {
     const product = await this.productRepository.findOne({
       where: { id },
       relations: ['brand', 'categories', 'variants'],
@@ -107,27 +110,32 @@ export class ProductsService {
       description: product.description,
       price: product.price,
       discount: product.discount,
-      brand: product.brand ? { id: product.brand.id, name: product.brand.name } : null,
+      brand: product.brand
+        ? { id: product.brand.id, name: product.brand.name }
+        : null,
       categories: product.categories?.map((category) => ({
         id: category.id,
         name: category.name,
       })),
-      variants: product.variants
-        ?.filter((variant) => variant.id === variantId) // Filtra solo la variante que coincide con variantId
-        .map((variant) => ({ // Mapea la variante filtrada
-          id: variant.id,
-          color: variant.color,
-          size: variant.size,
-          stock: variant.stock,
-          image: variant.image,
-        })) || [], // Devuelve un array vacío si no hay variantes
+      variants:
+        product.variants
+          ?.filter((variant) => variant.id === variantId) // Filtra solo la variante que coincide con variantId
+          .map((variant) => ({
+            // Mapea la variante filtrada
+            id: variant.id,
+            color: variant.color,
+            size: variant.size,
+            stock: variant.stock,
+            image: variant.image,
+          })) || [], // Devuelve un array vacío si no hay variantes
     };
   }
 
-
-
   // Actualizar un producto
-  async updateProduct(id: number, data: UpdateBrandDto): Promise<ProductResponse> {
+  async updateProduct(
+    id: number,
+    data: UpdateBrandDto,
+  ): Promise<ProductResponse> {
     await this.productRepository.update(id, data);
     return this.findOne(id);
   }
@@ -137,17 +145,14 @@ export class ProductsService {
     await this.productRepository.delete(id);
   }
 
-
   async createVariant(CreateVariantDto): Promise<Variant> {
     try {
-
       // Cambia la búsqueda a la forma correcta
-      const { id, color, stock, size, image } = CreateVariantDto
+      const { id, color, stock, size, image } = CreateVariantDto;
       const product = await this.productRepository.findOne({ where: { id } });
       if (!product) {
         throw new NotFoundException('Product not found');
       }
-
       const variant = new Variant();
       variant.color = color;
       variant.stock = stock;
@@ -157,15 +162,13 @@ export class ProductsService {
 
       return await this.variantRepository.save(variant);
     } catch (error) {
-      console.log(error)
+     
       throw new BadRequestException(error);
     }
   }
 
-
   async updateVariant(UpdateVariantDto, id: number) {
     try {
-
       // Cambia la búsqueda a la forma correcta
 
       const variant = await this.variantRepository.update(id, UpdateVariantDto);
@@ -173,13 +176,12 @@ export class ProductsService {
         throw new NotFoundException(' not found');
       }
 
-      return true
+      return true;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new BadRequestException(error);
     }
   }
-
 
   // Create a brand
   async createBrand(createBrandDto: CreateBrandDto): Promise<Brand> {
@@ -189,7 +191,7 @@ export class ProductsService {
 
   // Get all brands
   async findAllBrands(): Promise<Brand[]> {
-    console.log("entro aqui")
+    console.log('entro aqui');
     return await this.brandRepository.find();
   }
 
@@ -199,8 +201,11 @@ export class ProductsService {
   }
 
   // Update a brand
-  async updateBrand(id: number, updateBrandDto: UpdateBrandDto): Promise<Brand> {
-    console.log(updateBrandDto)
+  async updateBrand(
+    id: number,
+    updateBrandDto: UpdateBrandDto,
+  ): Promise<Brand> {
+    console.log(updateBrandDto);
     await this.brandRepository.update(id, updateBrandDto);
     return this.findBrandById(id);
   }
@@ -210,10 +215,10 @@ export class ProductsService {
     await this.brandRepository.delete(id);
   }
 
-
-
-  async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category> {
-    console.log(createCategoryDto, "DTO")
+  async createCategory(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<Category> {
+    console.log(createCategoryDto, 'DTO');
     const category = this.categoryRepository.create(createCategoryDto);
     return await this.categoryRepository.save(category);
   }
@@ -229,8 +234,11 @@ export class ProductsService {
   }
 
   // Actualizar una categoría
-  async updateCategory(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
-    console.log(id)
+  async updateCategory(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<Category> {
+    console.log(id);
     await this.categoryRepository.update(id, updateCategoryDto);
     return this.findCategoryById(id);
   }
@@ -265,5 +273,4 @@ export class ProductsService {
   async removeSize(id: number): Promise<void> {
     await this.sizeRepository.delete(id);
   }
-
 }

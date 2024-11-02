@@ -3,10 +3,9 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class Size {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    name: string; // Nombre de la talla
-
+  @Column()
+  name: string; // Nombre de la talla
 }

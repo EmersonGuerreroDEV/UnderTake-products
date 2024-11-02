@@ -1,6 +1,6 @@
-import { ProductResponse } from "./product.interface";
+import { ProductResponse } from './product.interface';
 
 export interface ProductsListResponse {
-    products: ProductResponse[];
-    total: number;
+  products: ProductResponse[];
+  total: number;
 }

@@ -1,34 +1,34 @@
 export interface ProductResponse {
-    id: number;
-    name: string;
-    description?: string;
-    price: number;
-    brand?: BrandResponse;
-    size?: SizeResponse;
-    categories?: CategoryResponse[];
-    variants?: VariantResponse[];
-    discount: number,
-    variant?: VariantResponse
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  brand?: BrandResponse;
+  size?: SizeResponse;
+  categories?: CategoryResponse[];
+  variants?: VariantResponse[];
+  discount: number;
+  variant?: VariantResponse;
 }
 
 interface BrandResponse {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 }
 
 interface SizeResponse {
-    id: number;
-    label: string;
+  id: number;
+  label: string;
 }
 
 interface CategoryResponse {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 }
 
 interface VariantResponse {
-    id: number;
-    color: string;
-    size: string;
-    stock: number;
+  id: number;
+  color: string;
+  size: string;
+  stock: number;
 }

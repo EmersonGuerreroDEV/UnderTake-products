@@ -40,8 +40,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         synchronize: true, // Solo para desarrollo, desactívalo en producción
       }),
     }),
-    TypeOrmModule.forFeature([Product, Brand, Category, Variant, Size]),],
+    TypeOrmModule.forFeature([Product, Brand, Category, Variant, Size]),
+  ],
   controllers: [ProductsController],
   providers: [ProductsService],
 })
-export class AppModule { }
+export class AppModule {}
