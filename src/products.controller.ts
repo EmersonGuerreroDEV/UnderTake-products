@@ -45,8 +45,9 @@ export class ProductsController {
   }
 
   @MessagePattern({ cmd: 'get-get_product_by_id' })
-  findOneVariant(@Body() data: any) {
-    return this.productsService.findOneVariant(data.variantId, data.productId);
+  async findOneVariant(@Body() data: any) {
+
+    return await this.productsService.findOneVariant(data.variantId, data.productId);
   }
 
   @MessagePattern({ cmd: 'update-product' })
@@ -67,6 +68,14 @@ export class ProductsController {
   deleteProduct(@Body('id') id: number) {
     return this.productsService.deleteProduct(id);
   }
+
+
+  @MessagePattern({ cmd: 'delete-variant' })
+  deleteVariant(@Body('id') id: number) {
+    return this.productsService.deleteVariant(id);
+  }
+
+
 
   // Métodos para manejar marcas
   @MessagePattern({ cmd: 'create-brands' })

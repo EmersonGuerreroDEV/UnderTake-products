@@ -36,7 +36,7 @@ export class ProductsService {
     private sizeRepository: Repository<Size>,
     @InjectRepository(Variant)
     private variantRepository: Repository<Variant>,
-  ) {}
+  ) { }
 
   async createProduct(data: Product): Promise<CreateBrandDto> {
     // Verifica que estás creando un solo producto
@@ -145,6 +145,10 @@ export class ProductsService {
     await this.productRepository.delete(id);
   }
 
+  async deleteVariant(id: number): Promise<void> {
+    await this.variantRepository.delete(id);
+  }
+
   async createVariant(CreateVariantDto): Promise<Variant> {
     try {
       // Cambia la búsqueda a la forma correcta
@@ -162,7 +166,7 @@ export class ProductsService {
 
       return await this.variantRepository.save(variant);
     } catch (error) {
-     
+
       throw new BadRequestException(error);
     }
   }
